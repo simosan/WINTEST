@@ -1,0 +1,44 @@
+##################OracleWebDBサーバでテスト#####################
+###########シナリオ１-読み取り専用フォルダ確認=========
+TargetCon1:
+  ConnParm:
+  - hostname: sim2016-aws
+  - userid: sim@simosan.local
+  - passwd: _${SIMPASSWD}
+  Operation:
+### D:\app\xx\binにファイルを書き込む→失敗する想定
+  - remotetest: cmd /c echo hogehoge > d:\app\xx\bin\test.txt
+    testname: ファイル書込み失敗確認
+    expect:
+        in: 拒否
+### D:\app\xx\tmpにファイルを書き込む→成功する想定
+  - remotetest: cmd /c echo hogehoge > d:\app\xx\tmp\test.txt;dir D:\app\xx\tmp\test.txt
+    testname: ファイル書込み成功確認
+    expect:
+        in: test.txt
+###########シナリオ２-Oracle起動，接続確認=========
+TargetCon2:
+  ConnParm:
+  - hostname: sim2016-aws
+  - userid: Administrator@simosan.local
+  - passwd: _${ADMINPASSWD}
+  Operation:
+### oracleプロセス起動確認
+  - remotetest: tasklist /v
+    testname: oracleプロセス起動確認
+    expect:
+        in: oracle.exe
+### sqlplus接続確認
+  - remotetest: sqlplus system/_${DBPASSWD} 
+    testname: sqlplus接続確認
+    expect:
+        in: に接続されました。
+###########シナリオ３-Web接続確認=========
+TargetCon3:
+  ConnParm:
+  - hostname: localhost
+  Operation:
+  - localtest: powershell -c "Invoke-WebRequest -Uri http://192.168.112.11/"
+    testname: Webサーバ接続確認
+    expect:
+        in: StatusCode.*:.200

@@ -1,0 +1,37 @@
+###################ローカルサーバでテスト#####################
+TargetCon1:
+  ConnParm:
+  - hostname: localhost
+  Operation:
+  ### pythonプロセスが起動していることを確認→成功
+  - localtest: tasklist /v
+    testname: pythonプロセスが起動していることを確認→成功
+    expect: 
+        in: python.exe.*Console
+  ### rubyプロセスが起動していないことを確認→成功
+  - localtest: tasklist /v
+    testname: rubyプロセスが起動していないことを確認→成功
+    expect:
+     notin: ruby.exe.*Console
+###################リモートサーバでテスト#####################
+TargetCon2:
+  ConnParm:
+  - hostname: 192.168.11.10
+  - userid: Administrator@simosan.local
+  - passwd: _${ADMINPASSWD}
+  Operation:
+### ドメインコントローラ正常性確認コマンドで"エラー"が含まれていないことを確認→結果含まれるので失敗
+  - remotetest: dcdiag /v
+    testname: ドメインコントローラ正常性確認コマンドで"エラー"が含まれていないことを確認→結果含まれるので失敗
+    expect:
+     notin: エラー 
+### ドメインコントローラ正常性確認コマンドで"エラー"が含まれていることを確認→含まれているので成功
+  - remotetest: dcdiag /v
+    testname: ドメインコントローラ正常性確認コマンドで"エラー"が含まれていることを確認→含まれているので成功
+    expect:
+        in: エラー
+### ドメインコントローラ正常性確認コマンドで"hogehoge"が含まれていないことを確認→含まれていないので成功
+  - remotetest: dcdiag /a
+    testname: ドメインコントローラ正常性確認コマンドで"hogehoge"が含まれていないことを確認→含まれていないので成功
+    expect:
+     notin: hogehoge
