@@ -66,10 +66,10 @@ Summary of Description
                   "Notin" is a case where the result confirms that the target string is not included.
 
 4) Environment variables (\_${XXX}) in yaml can be replaced with environment variables set to the OS. If you want to replace it, you need to set the OS environment variables in advance.
-The yaml environment variable $\_{HOGE} should be set in advance like $env:HOGE="AAA" in powershell or set HOGE="AAA" in DOS, so that you don't have to write passwd and so on.
+The yaml environment variable \_${HOGE} should be set in advance like $env:HOGE="AAA" in powershell or set HOGE="AAA" in DOS, so that you don't have to write passwd and so on.
 XXX in \_${XXX} should be the letters in a-zA-Z0-9. Special characters and 2-byte characters are not allowed.
 
-5) When inserting a password into the environment variable (\_${XXX}) in yaml, be sure to use the format $\_{~PASSWD}.
+5) When inserting a password into the environment variable (\_${XXX}) in yaml, be sure to use the format \_${~PASSWD}.
 If this format is not followed, the password will be displayed (not masked) in the standard output of the runtime command.
 
 6) Multiple hosts can be specified in hostname of yaml. Separate them with commas.
